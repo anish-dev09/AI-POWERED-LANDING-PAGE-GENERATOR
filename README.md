@@ -83,7 +83,7 @@ landing-page-generator/
 - Python 3.11 or higher
 - pip (Python package manager)
 - Git
-- OpenAI API key
+- **Gemini API key** (Primary - FREE, recommended) OR **OpenAI API key** (Optional)
 - Unsplash API key (optional, for images)
 
 ### Installation
@@ -116,9 +116,30 @@ landing-page-generator/
    # Copy the example env file
    copy .env.example .env
    
-   # Edit .env and add your API keys
-   # OPENAI_API_KEY=your_key_here
-   # UNSPLASH_ACCESS_KEY=your_key_here
+   # Edit .env and configure your AI provider
+   ```
+
+   **Option A: Using Gemini (Recommended - FREE):**
+   - Get API key from: https://makersuite.google.com/app/apikey
+   - Update `.env`:
+   ```env
+   AI_PROVIDER=gemini
+   GEMINI_API_KEY=AIza...
+   ```
+
+   **Option B: Using OpenAI:**
+   - Get API key from: https://platform.openai.com/api-keys
+   - Update `.env`:
+   ```env
+   AI_PROVIDER=openai
+   OPENAI_API_KEY=sk-...
+   ```
+
+   **Option C: Support Both (Best for development):**
+   ```env
+   AI_PROVIDER=gemini  # Switch between gemini/openai
+   GEMINI_API_KEY=AIza...
+   OPENAI_API_KEY=sk-...
    ```
 
 5. **Initialize database**
@@ -202,7 +223,9 @@ pytest tests/test_api/test_generate.py -v
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `OPENAI_API_KEY` | OpenAI API key for content generation | Yes |
+| `AI_PROVIDER` | AI service to use (gemini/openai) | Yes |
+| `GEMINI_API_KEY` | Google Gemini API key | Yes (if using Gemini) |
+| `OPENAI_API_KEY` | OpenAI API key | Yes (if using OpenAI) |
 | `UNSPLASH_ACCESS_KEY` | Unsplash API key for images | No |
 | `DATABASE_URL` | Database connection string | Yes |
 | `DEBUG` | Debug mode (True/False) | No |
