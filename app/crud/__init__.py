@@ -1,6 +1,7 @@
 """
-CRUD operations package
-"""from .business import (
+CRUD operations package.
+"""
+from .business import (
     create_business,
     get_business,
     get_businesses,
