@@ -92,6 +92,10 @@ class PageOutput(BaseModel):
         from_attributes = True
 
 
+# Aliases for API compatibility
+LandingPageResponse = PageOutput
+
+
 class PageListOutput(BaseModel):
     """Schema for listing multiple landing pages."""
     total: int

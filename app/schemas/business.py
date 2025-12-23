@@ -56,6 +56,11 @@ class BusinessOutput(BaseModel):
         from_attributes = True  # For Pydantic v2 (replaces orm_mode)
 
 
+# Aliases for API compatibility
+BusinessCreate = BusinessInput
+BusinessResponse = BusinessOutput
+
+
 class BusinessUpdate(BaseModel):
     """Schema for updating business information."""
     name: Optional[str] = Field(None, min_length=2, max_length=100)
