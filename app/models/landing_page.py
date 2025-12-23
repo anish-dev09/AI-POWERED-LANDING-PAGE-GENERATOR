@@ -5,8 +5,12 @@ Landing Page model - stores generated landing page data
 from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime
+from typing import Optional, List, TYPE_CHECKING
 from app.database import Base
 import json
+
+if TYPE_CHECKING:
+    from app.models.business import Business
 
 
 class LandingPage(Base):
@@ -55,45 +59,45 @@ class LandingPage(Base):
     __tablename__ = "landing_pages"
     
     # Primary Key
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    id: int = Column(Integer, primary_key=True, index=True, autoincrement=True)  # type: ignore
     
     # Foreign Keys
-    business_id = Column(Integer, ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False, index=True)
+    business_id: int = Column(Integer, ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False, index=True)  # type: ignore
     
     # Version Control
-    version = Column(Integer, default=1, nullable=False)
+    version: int = Column(Integer, default=1, nullable=False)  # type: ignore
     
     # Content Fields
-    headline = Column(String(200), nullable=False)
-    subheadline = Column(Text, nullable=True)
-    cta_text = Column(String(100), default="Get Started")
-    features = Column(Text, nullable=True)  # JSON string
-    testimonials = Column(Text, nullable=True)  # JSON string
-    about_section = Column(Text, nullable=True)
+    headline: str = Column(String(200), nullable=False)  # type: ignore
+    subheadline: Optional[str] = Column(Text, nullable=True)  # type: ignore
+    cta_text: str = Column(String(100), default="Get Started")  # type: ignore
+    features: Optional[str] = Column(Text, nullable=True)  # type: ignore  # JSON string
+    testimonials: Optional[str] = Column(Text, nullable=True)  # type: ignore  # JSON string
+    about_section: Optional[str] = Column(Text, nullable=True)  # type: ignore
     
     # SEO Fields
-    meta_title = Column(String(60), nullable=True)
-    meta_description = Column(String(160), nullable=True)
-    keywords = Column(Text, nullable=True)  # JSON array
-    og_title = Column(String(100), nullable=True)
-    og_description = Column(String(200), nullable=True)
+    meta_title: Optional[str] = Column(String(60), nullable=True)  # type: ignore
+    meta_description: Optional[str] = Column(String(160), nullable=True)  # type: ignore
+    keywords: Optional[str] = Column(Text, nullable=True)  # type: ignore  # JSON array
+    og_title: Optional[str] = Column(String(100), nullable=True)  # type: ignore
+    og_description: Optional[str] = Column(String(200), nullable=True)  # type: ignore
     
     # Design Fields
-    theme = Column(String(50), default="modern")
-    primary_color = Column(String(7), default="#3B82F6")  # Hex color
-    secondary_color = Column(String(7), default="#1E40AF")
+    theme: str = Column(String(50), default="modern")  # type: ignore
+    primary_color: str = Column(String(7), default="#3B82F6")  # type: ignore  # Hex color
+    secondary_color: str = Column(String(7), default="#1E40AF")  # type: ignore
     
     # File Paths
-    html_path = Column(String(255), nullable=True)
-    css_path = Column(String(255), nullable=True)
+    html_path: Optional[str] = Column(String(255), nullable=True)  # type: ignore
+    css_path: Optional[str] = Column(String(255), nullable=True)  # type: ignore
     
     # Metadata
-    is_published = Column(Boolean, default=False)
-    view_count = Column(Integer, default=0)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    is_published: bool = Column(Boolean, default=False)  # type: ignore
+    view_count: int = Column(Integer, default=0)  # type: ignore
+    created_at: datetime = Column(DateTime, default=datetime.utcnow, nullable=False)  # type: ignore
+    updated_at: datetime = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)  # type: ignore
     
-    # Relationships
+    # Relationships (no type hint to avoid SQLAlchemy conflicts)
     business = relationship("Business", back_populates="landing_pages")
     
     def __repr__(self):

@@ -38,7 +38,7 @@ def get_business(db: Session, business_id: int) -> Optional[Business]:
     Returns:
         Business instance or None
     """
-    return db.query(Business).filter(Business.id == business_id).first()
+    return db.query(Business).filter(Business.id == business_id).first()  # type: ignore
 
 
 def get_businesses(
@@ -63,10 +63,10 @@ def get_businesses(
     
     if search:
         search_filter = or_(
-            Business.name.ilike(f"%{search}%"),
-            Business.industry.ilike(f"%{search}%")
+            Business.name.ilike(f"%{search}%"),  # type: ignore
+            Business.industry.ilike(f"%{search}%")  # type: ignore
         )
-        query = query.filter(search_filter)
+        query = query.filter(search_filter)  # type: ignore
     
     return query.offset(skip).limit(limit).all()
 
@@ -146,7 +146,7 @@ def business_exists(db: Session, name: str, exclude_id: Optional[int] = None) ->
     Returns:
         True if exists, False otherwise
     """
-    query = db.query(Business).filter(Business.name == name)
+    query = db.query(Business).filter(Business.name == name)  # type: ignore
     if exclude_id:
-        query = query.filter(Business.id != exclude_id)
+        query = query.filter(Business.id != exclude_id)  # type: ignore
     return query.first() is not None

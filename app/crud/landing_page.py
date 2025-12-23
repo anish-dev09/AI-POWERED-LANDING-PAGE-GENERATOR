@@ -43,7 +43,7 @@ def get_landing_page(db: Session, page_id: int) -> Optional[LandingPage]:
     Returns:
         LandingPage instance or None
     """
-    return db.query(LandingPage).filter(LandingPage.id == page_id).first()
+    return db.query(LandingPage).filter(LandingPage.id == page_id).first()  # type: ignore
 
 
 def get_landing_pages(
@@ -69,12 +69,12 @@ def get_landing_pages(
     query = db.query(LandingPage)
     
     if business_id:
-        query = query.filter(LandingPage.business_id == business_id)
+        query = query.filter(LandingPage.business_id == business_id)  # type: ignore
     
     if published_only:
-        query = query.filter(LandingPage.is_published == True)
+        query = query.filter(LandingPage.is_published == True)  # type: ignore
     
-    return query.order_by(desc(LandingPage.created_at)).offset(skip).limit(limit).all()
+    return query.order_by(desc(LandingPage.created_at)).offset(skip).limit(limit).all()  # type: ignore
 
 
 def update_landing_page(
@@ -223,9 +223,9 @@ def get_landing_page_count(
     query = db.query(LandingPage)
     
     if business_id:
-        query = query.filter(LandingPage.business_id == business_id)
+        query = query.filter(LandingPage.business_id == business_id)  # type: ignore
     
     if published_only:
-        query = query.filter(LandingPage.is_published == True)
+        query = query.filter(LandingPage.is_published == True)  # type: ignore
     
     return query.count()

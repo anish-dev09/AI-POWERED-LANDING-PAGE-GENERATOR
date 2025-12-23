@@ -5,7 +5,11 @@ Business model - stores business information
 from sqlalchemy import Column, Integer, String, DateTime, Text
 from sqlalchemy.orm import relationship
 from datetime import datetime
+from typing import Optional, List, TYPE_CHECKING
 from app.database import Base
+
+if TYPE_CHECKING:
+    from app.models.landing_page import LandingPage
 
 
 class Business(Base):
@@ -32,22 +36,22 @@ class Business(Base):
     __tablename__ = "businesses"
     
     # Primary Key
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    id: int = Column(Integer, primary_key=True, index=True, autoincrement=True)  # type: ignore
     
     # Business Information
-    name = Column(String(100), nullable=False, index=True)
-    industry = Column(String(50), nullable=False)
-    target_audience = Column(String(200), nullable=False)
-    tone = Column(String(20), default="professional")  # professional, friendly, bold, elegant
-    goal = Column(Text, nullable=False)
-    unique_value_proposition = Column(Text, nullable=True)
-    additional_info = Column(Text, nullable=True)
+    name: str = Column(String(100), nullable=False, index=True)  # type: ignore
+    industry: str = Column(String(50), nullable=False)  # type: ignore
+    target_audience: str = Column(String(200), nullable=False)  # type: ignore
+    tone: str = Column(String(20), default="professional")  # type: ignore  # professional, friendly, bold, elegant
+    goal: str = Column(Text, nullable=False)  # type: ignore
+    unique_value_proposition: Optional[str] = Column(Text, nullable=True)  # type: ignore
+    additional_info: Optional[str] = Column(Text, nullable=True)  # type: ignore
     
     # Metadata
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    created_at: datetime = Column(DateTime, default=datetime.utcnow, nullable=False)  # type: ignore
+    updated_at: datetime = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)  # type: ignore
     
-    # Relationships
+    # Relationships (no type hint to avoid SQLAlchemy conflicts)
     landing_pages = relationship(
         "LandingPage",
         back_populates="business",
