@@ -229,3 +229,7 @@ def get_landing_page_count(
         query = query.filter(LandingPage.is_published == True)  # type: ignore
     
     return query.count()
+
+
+# Alias for backwards compatibility with tests
+count_landing_pages = get_landing_page_count

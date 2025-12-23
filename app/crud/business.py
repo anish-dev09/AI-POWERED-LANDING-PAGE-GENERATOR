@@ -134,6 +134,10 @@ def get_business_count(db: Session) -> int:
     return db.query(Business).count()
 
 
+# Alias for backwards compatibility with tests
+count_businesses = get_business_count
+
+
 def business_exists(db: Session, name: str, exclude_id: Optional[int] = None) -> bool:
     """
     Check if a business with the given name already exists.

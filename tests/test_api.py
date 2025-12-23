@@ -131,7 +131,7 @@ def test_update_business():
     # Update the business
     update_data = {
         "name": "Updated Test Business",
-        "tone": "Friendly"
+        "tone": "friendly"  # tone is normalized to lowercase by the schema
     }
     
     response = client.put(f"/api/v1/businesses/{business_id}", json=update_data)
