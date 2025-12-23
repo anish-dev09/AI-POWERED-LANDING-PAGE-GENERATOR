@@ -1,0 +1,22 @@
+<section class="hero-section fade-in" id="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-headline">{{ headline }}</h1>
+            {% if subheadline %}
+            <p class="hero-subheadline">{{ subheadline }}</p>
+            {% endif %}
+            <div class="hero-cta">
+                <a href="#cta" class="btn btn-primary btn-large">{{ cta_text or 'Get Started' }}</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-image-placeholder">
+                <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="400" height="300" fill="var(--primary-color)" opacity="0.1" rx="8"/>
+                    <text x="200" y="150" text-anchor="middle" dominant-baseline="middle" 
+                          font-size="48" fill="var(--primary-color)">🚀</text>
+                </svg>
+            </div>
+        </div>
+    </div>
+</section>

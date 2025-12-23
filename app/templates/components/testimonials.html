@@ -1,0 +1,35 @@
+<section class="testimonials-section fade-in" id="testimonials">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">What Our Customers Say</h2>
+            <p class="section-subtitle">Real stories from real people</p>
+        </div>
+        <div class="testimonials-grid">
+            {% for testimonial in testimonials %}
+            <div class="testimonial-card">
+                <div class="testimonial-rating">
+                    {% for i in range(testimonial.rating or 5) %}
+                    <span class="star">⭐</span>
+                    {% endfor %}
+                </div>
+                <blockquote class="testimonial-text">
+                    "{{ testimonial.text }}"
+                </blockquote>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        {{ testimonial.name[0] if testimonial.name else 'A' }}
+                    </div>
+                    <div class="author-info">
+                        <div class="author-name">{{ testimonial.name }}</div>
+                        {% if testimonial.title or testimonial.company %}
+                        <div class="author-title">
+                            {{ testimonial.title }}{% if testimonial.title and testimonial.company %}, {% endif %}{{ testimonial.company }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

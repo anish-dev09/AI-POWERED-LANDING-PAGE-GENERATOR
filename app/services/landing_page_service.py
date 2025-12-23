@@ -7,8 +7,10 @@ from typing import Dict, Any, Optional
 from sqlalchemy.orm import Session
 
 from app.crud.business import get_business
-from app.crud.landing_page import create_landing_page
+from app.crud.landing_page import create_landing_page, update_landing_page
 from app.services.content_generator import get_content_service
+from app.services.template_service import get_template_service
+from app.services.css_generator import get_css_generator
 from app.schemas.landing_page import PageCustomization
 
 
@@ -18,6 +20,8 @@ class LandingPageService:
     def __init__(self):
         """Initialize the landing page service."""
         self.content_service = get_content_service()
+        self.template_service = get_template_service()
+        self.css_generator = get_css_generator()
     
     async def generate_landing_page(
         self,
@@ -103,6 +107,13 @@ class LandingPageService:
         
         print(f"✓ Landing page generated successfully (ID: {db_page.id})")
         
+        # Generate HTML and CSS files
+        html_path, css_path = await self._generate_files(db, db_page, business)
+        
+        print(f"✓ HTML and CSS files generated")
+        print(f"  HTML: {html_path}")
+        print(f"  CSS: {css_path}")
+        
         # Return the page data with parsed JSON for easy use
         return {
             "id": db_page.id,
@@ -118,6 +129,8 @@ class LandingPageService:
             "theme": db_page.theme,
             "primary_color": db_page.primary_color,
             "secondary_color": db_page.secondary_color,
+            "html_path": html_path,
+            "css_path": css_path,
             "created_at": db_page.created_at
         }
     
@@ -169,6 +182,63 @@ class LandingPageService:
         content.update(seo)
         
         return content
+    
+    async def _generate_files(
+        self,
+        db: Session,
+        landing_page,
+        business
+    ) -> tuple[str, str]:
+        """
+        Generate HTML and CSS files for the landing page.
+        
+        Args:
+            db: Database session
+            landing_page: LandingPage model instance
+            business: Business model instance
+            
+        Returns:
+            Tuple of (html_path, css_path)
+        """
+        # Get output directory
+        output_dir = self.get_output_directory()
+        
+        # Generate file paths
+        page_slug = f"page_{landing_page.id}"
+        html_filename = f"{page_slug}.html"
+        css_filename = f"{page_slug}.css"
+        
+        html_path = os.path.join(output_dir, html_filename)
+        css_path = os.path.join(output_dir, css_filename)
+        
+        # Generate and save CSS
+        self.css_generator.generate_and_save(
+            output_path=css_path,
+            theme=landing_page.theme or 'modern',
+            primary_color=landing_page.primary_color or '#3B82F6',
+            secondary_color=landing_page.secondary_color or '#10B981'
+        )
+        
+        # Generate and save HTML (with relative CSS path for the HTML link)
+        css_relative_path = css_filename
+        landing_page.css_path = css_relative_path  # Update for template
+        
+        self.template_service.render_and_save(
+            landing_page=landing_page,
+            output_path=html_path,
+            business=business,
+            page_url=f"/pages/{page_slug}",
+            powered_by=True
+        )
+        
+        # Update database with file paths
+        update_data = {
+            "html_path": html_path,
+            "css_path": css_path
+        }
+        update_landing_page(db, landing_page.id, update_data)  # type: ignore
+        
+        return html_path, css_path
     
     def get_output_directory(self) -> str:
         """Get the directory for generated landing pages."""
