@@ -1,3 +1,4 @@
+<!-- htmlhint-disable -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,7 +35,7 @@
     
     {% block extra_head %}{% endblock %}
 </head>
-<body class="theme-{{ theme }}">
+<body class="theme-{{ theme }}"{% if page_id %} data-page-id="{{ page_id }}"{% endif %}>
     {% block content %}{% endblock %}
     
     {# Smooth Scroll Script #}
@@ -66,10 +67,11 @@
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
         
         // View count tracker
-        {% if page_id %}
-        fetch('/api/v1/landing-pages/{{ page_id }}/view', { method: 'POST' })
-            .catch(err => console.error('View tracking failed:', err));
-        {% endif %}
+        const pageId = document.body.dataset.pageId;
+        if (pageId) {
+            fetch(`/api/v1/landing-pages/${pageId}/view`, { method: 'POST' })
+                .catch(err => console.error('View tracking failed:', err));
+        }
     </script>
     
     {% block extra_scripts %}{% endblock %}
