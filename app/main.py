@@ -1,6 +1,7 @@
 """
 Main FastAPI application entry point.
 """
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -9,13 +10,28 @@ from app.database import init_db
 from app.api.routers import business, landing_page, health
 
 
+# Lifespan event handler
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Initialize database and perform startup/shutdown tasks."""
+    print("🚀 Starting AI Landing Page Generator API...")
+    try:
+        init_db()
+        print("✅ Database initialized successfully")
+    except Exception as e:
+        print(f"❌ Database initialization failed: {e}")
+    yield
+    print("👋 Shutting down AI Landing Page Generator API...")
+
+
 # Create FastAPI application
 app = FastAPI(
     title="AI Landing Page Generator API",
     description="AI-powered landing page generation service with Google Gemini and OpenAI",
     version="1.0.0",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    lifespan=lifespan
 )
 
 # Configure CORS
@@ -26,18 +42,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-# Initialize database on startup
-@app.on_event("startup")
-def startup_event():
-    """Initialize database and perform startup tasks."""
-    print("🚀 Starting AI Landing Page Generator API...")
-    try:
-        init_db()
-        print("✅ Database initialized successfully")
-    except Exception as e:
-        print(f"❌ Database initialization failed: {e}")
 
 
 # Root endpoint
